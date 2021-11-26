@@ -179,3 +179,84 @@ const missing_students = [
 		"image": null,
 	},
 ];
+
+
+const classmateEl = document.querySelector("#classmate");
+const buttonsEl = document.querySelector("#buttons-wrapper");
+const resultEl = document.querySelector("#result")
+
+// Create the guess counter and set it to zero
+let guesses = 0;
+let corrguess =0;
+
+// Variables that will be used
+let corrClassmate;
+let fourNames;
+let corrName;
+
+
+// Function that shuffles the array (Fisher-Yates algorithm)
+const shuffleArray = (array) => {
+	for (let i = array.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		const temp = array[i];
+		array[i] = array[j];
+		array[j] = temp;
+	}
+}
+
+
+
+const startGame = () => {
+	// chooses the correct answer and loops over the array based on the guesses
+	corrClassmate = students[guesses];
+	classmateEl.src = corrClassmate.image;
+	corrName = corrClassmate.name;
+
+	// shuffles the students array
+	shuffleArray(students);
+
+	// slices out 3 random names
+	fourNames = students.slice(0,3);
+
+	// Puts all the options in one array
+	fourNames.push(corrClassmate);
+
+	//  shuffle the array of options so the right answer isn't in the same spot every time
+	shuffleArray(fourNames);
+
+	// resets the buttons
+	buttonsEl.innerHTML = "";
+
+	fourNames.forEach((names) =>  {
+		if(names.name === corrName){
+			buttonsEl.innerHTML += `<button id="correctName" class="btn btn-secondary m-2">${names.name}</button>`
+		}
+		else {
+			buttonsEl.innerHTML += `<button id="wrongName" class="btn btn-secondary m-2">${names.name}</button>`
+		}
+	});
+};
+startGame();
+
+buttonsEl.addEventListener(`click`, e => {
+	if( e.target.tagName === `BUTTON`){
+		guesses++;
+
+		resultEl.innerHTML =  `${corrguess} / ${guesses}`;
+
+		if (e.target.id === `correctName`){
+			corrguess++
+			resultEl.innerHTML =  `${corrguess}/${guesses}`;
+			startGame();
+		}
+
+		else{
+			startGame();
+		}
+	}
+})
+
+
+
+
