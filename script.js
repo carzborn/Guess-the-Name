@@ -183,7 +183,6 @@ const missing_students = [
 
 const classmateEl = document.querySelector("#classmate");
 const buttonsEl = document.querySelector("#buttons-wrapper");
-const resultEl = document.querySelector("#result")
 
 // Create the guess counter and set it to zero
 let guesses = 0;
@@ -191,9 +190,8 @@ let corrguess =0;
 
 // Variables that will be used
 let corrClassmate;
-let fourNames;
+let fourNames = [];
 let corrName;
-
 
 // Function that shuffles the array (Fisher-Yates algorithm)
 const shuffleArray = (array) => {
@@ -205,57 +203,68 @@ const shuffleArray = (array) => {
 	}
 }
 
-
+studentsCopy = [...students];
 
 const startGame = () => {
-	// chooses the correct answer and loops over the array based on the guesses
-	corrClassmate = students[guesses];
-	classmateEl.src = corrClassmate.image;
-	corrName = corrClassmate.name;
+	if(guesses !== students.length) {
+		// chooses the correct answer and loops over the array based on the guesses
+		corrClassmate = students[guesses];
+		classmateEl.src = corrClassmate.image;
+		corrName = corrClassmate.name;
+		studentsCopy = students.filter(students => students.name !== corrName);
 
-	// shuffles the students array
-	shuffleArray(students);
+		// shuffles the students copy
+		shuffleArray(studentsCopy);
 
-	// slices out 3 random names
-	fourNames = students.slice(0,3);
+		// slices out three names from the students clone
+		fourNames = studentsCopy.slice(0,3);
 
-	// Puts all the options in one array
-	fourNames.push(corrClassmate);
+		// Puts all the options in one array
+		fourNames.push(corrClassmate);
 
-	//  shuffle the array of options so the right answer isn't in the same spot every time
-	shuffleArray(fourNames);
+		//  shuffle the array of options so the right answer isn't in the same spot every time
+		shuffleArray(fourNames);
 
-	// resets the buttons
-	buttonsEl.innerHTML = "";
+		// resets the buttons
+		buttonsEl.innerHTML = "";
 
-	fourNames.forEach((names) =>  {
-		if(names.name === corrName){
-			buttonsEl.innerHTML += `<button id="correctName" class="btn btn-secondary m-2">${names.name}</button>`
-		}
-		else {
-			buttonsEl.innerHTML += `<button id="wrongName" class="btn btn-secondary m-2">${names.name}</button>`
-		}
-	});
+		fourNames.forEach((names) =>  {
+			if(names.name === corrName){
+				buttonsEl.innerHTML += `<button id="correctName" class="btn btn-secondary m-2">${names.name}</button>`
+			}
+			else {
+				buttonsEl.innerHTML += `<button id="wrongName" class="btn btn-secondary m-2">${names.name}</button>`
+			}
+		});
+	}	else{
+		console.log("end");
+	}
 };
+
 startGame();
 
 buttonsEl.addEventListener(`click`, e => {
 	if( e.target.tagName === `BUTTON`){
 		guesses++;
 
-		resultEl.innerHTML =  `${corrguess} / ${guesses}`;
-
 		if (e.target.id === `correctName`){
 			corrguess++
-			resultEl.innerHTML =  `${corrguess}/${guesses}`;
+			startGame();
+		}	else{
 			startGame();
 		}
+		console.log(guesses, corrguess);
 
-		else{
-			startGame();
+		if (guesses === students.length){
+			alert(`You got ${corrguess} correct out of 39! Press the button to try again.`);
+			location.reload();
 		}
 	}
 })
+
+
+
+
 
 
 
