@@ -230,10 +230,10 @@ const startGame = () => {
 
 		fourNames.forEach((names) =>  {
 			if(names.name === corrName){
-				buttonsEl.innerHTML += `<button  class="btn btn-secondary m-2">${names.name}</button>`
+				buttonsEl.innerHTML += `<button id="correctName" class="btn btn-secondary m-2">${names.name}</button>`
 			}
 			else {
-				buttonsEl.innerHTML += `<button class="btn btn-secondary m-2">${names.name}</button>`
+				buttonsEl.innerHTML += `<button id="wrongName" class="btn btn-secondary m-2">${names.name}</button>`
 			}
 		});
 	}	else{
